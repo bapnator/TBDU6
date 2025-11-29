@@ -16,7 +16,7 @@ public class Conexion {
 
     private static final String DB_URL = "jdbc:sqlserver://localhost:1433;databaseName=Zoologico;encrypt=false;trustServerCertificate=true;";
     private static final String USER = "sa";
-    private static final String PASS = "1423";
+    private static final String PASS = "uwu";
 
     public static void main(String[] args) {
         
