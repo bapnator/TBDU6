@@ -4,12 +4,11 @@
 package com.example.Proyecto.Integrador;
 
 public class App {
-        public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
-        System.out.println("Chamba aaaaaaa me corrro");
-    }
     public String getGreeting() {
         return "Hello World!";
     }
 
+    public static void main(String[] args) {
+        System.out.println(new App().getGreeting());
+    }
 }
