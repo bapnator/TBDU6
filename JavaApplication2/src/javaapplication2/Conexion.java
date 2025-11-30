@@ -21,7 +21,6 @@ public class Conexion {
         String USER = "zoo";
         String PASS = "zoo";
         Connection con = null; // Inicializamos la conexión a null
-
         try {
             // 1. Intentar obtener la conexión sin usar try-with-resources
             con = DriverManager.getConnection(DB_URL, USER, PASS);
