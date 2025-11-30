@@ -241,17 +241,18 @@ public boolean modificarAnimal(int animalID, String nombre, String sexo, java.ut
  * @return Vector<Object> con los datos del animal: [Nombre, Sexo, FechaNac, Especie, Habitat]
  */
 public Vector<Object> obtenerAnimalPorId(int animalID) {
-    Vector<Object> datosAnimal = null;
+Vector<Object> datosAnimal = null;
     
-    // Consulta SQL que usa INNER JOIN para obtener los nombres completos
-    String SQL_SELECT = "SELECT A.Nombre, A.Sexo, A.FechaNacimiento, " +
+    // Consulta SQL que usa INNER JOIN para obtener los nombres completos y ambas fechas.
+    // Alias A=Animales, E=Especies, H=Habitat
+    String SQL_SELECT = "SELECT A.Nombre, A.Sexo, A.FechaNacimiento, A.FechaRegistro, " +
                         "E.NombreComun AS Especie, H.NombreHabitat AS Habitat " +
                         "FROM Animales A " +
                         "INNER JOIN Especies E ON A.EspecieID = E.EspecieID " +
                         "INNER JOIN Habitat H ON A.HabitatID = H.HabitatID " +
                         "WHERE A.AnimalID = ?";
 
-    try (Connection con = Conexion.getConexion();
+    try (Connection con = Conexion.getConexion(); // Asume que tienes una clase Conexion
          PreparedStatement pstmt = con.prepareStatement(SQL_SELECT)) {
 
         pstmt.setInt(1, animalID);
@@ -259,20 +260,23 @@ public Vector<Object> obtenerAnimalPorId(int animalID) {
         try (ResultSet rs = pstmt.executeQuery()) {
             if (rs.next()) {
                 datosAnimal = new Vector<>();
+                
                 // 1. Nombre
-                datosAnimal.add(rs.getString("Nombre")); 
+                datosAnimal.add(rs.getString("Nombre"));             // (Índice 0)
                 // 2. Sexo
-                datosAnimal.add(rs.getString("Sexo")); 
+                datosAnimal.add(rs.getString("Sexo"));              // (Índice 1)
                 // 3. Fecha Nacimiento (java.sql.Date)
-                datosAnimal.add(rs.getDate("FechaNacimiento")); 
-                // 4. Especie (Nombre)
-                datosAnimal.add(rs.getString("Especie")); 
-                // 5. Hábitat (Nombre)
-                datosAnimal.add(rs.getString("Habitat"));
+                datosAnimal.add(rs.getDate("FechaNacimiento"));     // (Índice 2)
+                // 4. Especie (Nombre legible)
+                datosAnimal.add(rs.getString("Especie"));           // (Índice 3)
+                // 5. Hábitat (Nombre legible)
+                datosAnimal.add(rs.getString("Habitat"));           // (Índice 4)
+                // 6. Fecha Registro (java.sql.Date)
+                datosAnimal.add(rs.getDate("FechaRegistro"));       // (Índice 5)
             }
         }
     } catch (SQLException e) {
-        System.err.println("❌ Error al obtener animal por ID: " + e.getMessage());
+        System.err.println("❌ Error al obtener animal por ID en DAO: " + e.getMessage());
         e.printStackTrace();
     }
     return datosAnimal;

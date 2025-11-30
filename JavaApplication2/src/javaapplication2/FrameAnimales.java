@@ -480,11 +480,17 @@ if (evt.getClickCount() == 1) {
                 // 4. Cargar Sexo
                 cmbSexo.setSelectedItem((String) datosAnimal.get(1)); 
 
-                // 5. Cargar Fecha Nacimiento (Conversion robusta de java.sql.Date a Calendar)
+// 5. Cargar Fecha Nacimiento (Conversion robusta)
                 java.sql.Date sqlDateNac = (java.sql.Date) datosAnimal.get(2);
                 java.util.Calendar calNac = java.util.Calendar.getInstance();
                 calNac.setTime(sqlDateNac);
-                dateCFNacimineto.setCurrent(calNac);
+                dateCFNacimineto.setCurrent(calNac); // <-- ¡Fecha de Nacimiento cargada!
+                
+
+                java.sql.Date sqlDateReg = (java.sql.Date) datosAnimal.get(5);
+                java.util.Calendar calReg = java.util.Calendar.getInstance();
+                calReg.setTime(sqlDateReg);
+                dateCFRegistro.setCurrent(calReg); // <-- ¡Fecha de Registro cargada!
                 
                 // 6. Cargar Especie
                 cmbEspecie.setSelectedItem((String) datosAnimal.get(3));
@@ -529,6 +535,7 @@ if (evt.getClickCount() == 1) {
                 }
             }
         } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
+
         }
         //</editor-fold>
 
