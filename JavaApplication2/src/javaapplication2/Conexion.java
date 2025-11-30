@@ -19,7 +19,7 @@ public class Conexion {
         System.out.println("Intentando conectar a la base de datos...");
         String DB_URL = "jdbc:sqlserver://localhost:1433;databaseName=Zoologico;encrypt=false;trustServerCertificate=true;";
         String USER = "sa";
-        String PASS = "1423";
+        String PASS = "wuwu";
         Connection con = null; // Inicializamos la conexión a null
 
         try {
