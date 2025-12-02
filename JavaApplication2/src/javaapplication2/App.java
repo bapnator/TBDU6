@@ -7,6 +7,11 @@ public class App {
         public static void main(String[] args) {
         System.out.println(new App().getGreeting());
         System.out.println("Chamba aaaaaaa me corrro");
+//        NewJFrame f = new  NewJFrame();
+//        f.setVisible(true);
+        
+        FrameAnimales a = new FrameAnimales();
+        a.setVisible(true);
     }
     public String getGreeting() {
         return "Hello World!";
