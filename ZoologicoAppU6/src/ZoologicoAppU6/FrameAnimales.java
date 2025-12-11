@@ -1,13 +1,16 @@
 package ZoologicoAppU6;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Point;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Vector;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
@@ -16,13 +19,18 @@ import javax.swing.table.TableRowSorter;
 
 public class FrameAnimales extends javax.swing.JFrame {
     private int animalIDSeleccionado = -1;
+    private Component parentComponent;
     QueryLoaderScript dao;
     private Map<String, String> especiesMap, habitatsMap;
 
-    public FrameAnimales() {
+    public FrameAnimales(Component parentComponent) {
         initComponents();
         cargarDatosIniciales();
+        
         setBackground(new Color(0, 0, 0, 0));
+        
+        setLocationRelativeTo(parentComponent);
+        this.parentComponent = parentComponent;
     }
 
     private void cargarDatosIniciales() {
@@ -160,7 +168,7 @@ public class FrameAnimales extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setBackground(new java.awt.Color(0, 0, 0));
         setMinimumSize(new java.awt.Dimension(960, 720));
         setUndecorated(true);
@@ -208,10 +216,10 @@ public class FrameAnimales extends javax.swing.JFrame {
         jPanel8.setOpaque(false);
         jPanel8.setLayout(new java.awt.GridBagLayout());
 
-        jButton1.setBackground(new java.awt.Color(185, 40, 40));
+        jButton1.setBackground(new java.awt.Color(39, 82, 185));
         jButton1.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("X");
+        jButton1.setText("←");
         jButton1.addActionListener(this::jButton1ActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -718,8 +726,20 @@ public class FrameAnimales extends javax.swing.JFrame {
     }//GEN-LAST:event_jPanel1MouseDragged
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        parentComponent.setEnabled(true);
+        parentComponent.setLocation(getLocation());
+        parentComponent.setVisible(true);
         dispose();
+        ((JFrame)parentComponent).toFront();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    public static String normalizeForRegex(String input) {
+        if (input == null) return "";
+        // Normalize to NFD form and strip diacritical marks
+        String normalized = Normalizer.normalize(input, Normalizer.Form.NFD)
+                                       .replaceAll("\\p{M}", "");
+        return normalized;
+    }
 
     private void btnFiltrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiltrarActionPerformed
         TableModel model = jTable1.getModel();
@@ -727,16 +747,16 @@ public class FrameAnimales extends javax.swing.JFrame {
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>((DefaultTableModel) model);
         jTable1.setRowSorter(sorter);
 
-        String nombre = txtNombreFiltro.getText();
+        String nombre = normalizeForRegex(txtNombreFiltro.getText());
         String sexo = cmbSexoFiltro.getSelectedItem().toString();
         String especie = cmbEspecieFiltro.getSelectedItem().toString();
         String habitat = cmbHabitatFiltro.getSelectedItem().toString();
         
         // Create individual filters
-        RowFilter<DefaultTableModel, Object> speciesFilter = RowFilter.regexFilter(especie, 1);
-        RowFilter<DefaultTableModel, Object> sexFilter     = RowFilter.regexFilter(sexo, 3);
-        RowFilter<DefaultTableModel, Object> habitatFilter = RowFilter.regexFilter(habitat, 6);
-        RowFilter<DefaultTableModel, Object> nameFilter    = RowFilter.regexFilter(nombre, 2);
+        RowFilter<DefaultTableModel, Object> speciesFilter = RowFilter.regexFilter("(?i)" + especie, 1);
+        RowFilter<DefaultTableModel, Object> sexFilter     = RowFilter.regexFilter("(?i)" + sexo, 3);
+        RowFilter<DefaultTableModel, Object> habitatFilter = RowFilter.regexFilter("(?i)" + habitat, 6);
+        RowFilter<DefaultTableModel, Object> nameFilter    = RowFilter.regexFilter("(?i)" + nombre, 2);
 
         // Combine them with AND logic
         List<RowFilter<DefaultTableModel, Object>> filters = new ArrayList<>();

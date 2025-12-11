@@ -7,7 +7,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 public class App {
     public static void main(String[] args) {
         try { UIManager.setLookAndFeel(new FlatLightLaf()); } catch (UnsupportedLookAndFeelException e) { e.printStackTrace(); }
-        FrameAnimales a = new FrameAnimales();
+        FrameMain a = new FrameMain();
         a.setVisible(true);
     }
 }
