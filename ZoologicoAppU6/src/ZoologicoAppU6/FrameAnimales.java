@@ -1,5 +1,7 @@
 package ZoologicoAppU6;
 
+import java.awt.Color;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,9 +9,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Vector;
 import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 public class FrameAnimales extends javax.swing.JFrame {
-    // variable de seguridad para boton eliminar
     private int animalIDSeleccionado = -1;
     QueryLoaderScript dao;
     private Map<String, String> especiesMap, habitatsMap;
@@ -17,6 +22,7 @@ public class FrameAnimales extends javax.swing.JFrame {
     public FrameAnimales() {
         initComponents();
         cargarDatosIniciales();
+        setBackground(new Color(0, 0, 0, 0));
     }
 
     private void cargarDatosIniciales() {
@@ -32,13 +38,16 @@ public class FrameAnimales extends javax.swing.JFrame {
         especies.add("Seleccionar...");
         especies.addAll(dao.CargarSeleccionDinamica("Especies", "NombreEspecie"));
         cmbEspecie.setModel(new javax.swing.DefaultComboBoxModel<>(especies));
+        cmbEspecieFiltro.setModel(new javax.swing.DefaultComboBoxModel<>(especies));
 
         habitats.add("Seleccionar...");
         habitats.addAll(dao.CargarSeleccionDinamica("Habitat", "NombreHabitat"));
         cmbHabitat.setModel(new javax.swing.DefaultComboBoxModel<>(habitats));
+        cmbHabitatFiltro.setModel(new javax.swing.DefaultComboBoxModel<>(habitats));
         
         // Puedes usar cmbEspecie1 para el campo "Sexo", si es el caso, llenándolo manualmente:
         cmbSexo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Seleccionar...", "M", "F"}));
+        cmbSexoFiltro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Seleccionar...", "M", "F"}));
         
         Vector<String> especiesID = new Vector<String>(dao.CargarSeleccionDinamica("Especies", "idEspecie"));
         Vector<String> habitatsID = new Vector<String>(dao.CargarSeleccionDinamica("Habitat", "idHabitat"));
@@ -56,9 +65,6 @@ public class FrameAnimales extends javax.swing.JFrame {
             String nombre = habitats.get(i + 1);
             habitatsMap.put(nombre, id);
         }
-
-        // NOTA IMPORTANTE: Si quieres que la tabla se actualice después de GUARDAR/ELIMINAR,
-        // solo tienes que llamar de nuevo a este método: cargarDatosIniciales();
     }
 
     private void limpiarCampos() {
@@ -110,174 +116,366 @@ public class FrameAnimales extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
+        panelShadow1 = new ZoologicoAppU6.PanelShadow();
+        jPanel9 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
+        jPanel7 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jPanel8 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         txtNombre = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        cmbEspecie = new javax.swing.JComboBox<>();
-        cmbHabitat = new javax.swing.JComboBox<>();
         cmbSexo = new javax.swing.JComboBox<>();
+        jLabel4 = new javax.swing.JLabel();
+        dateCFNacimiento = new datechooser.beans.DateChooserCombo();
+        jLabel5 = new javax.swing.JLabel();
+        dateCFRegistro = new datechooser.beans.DateChooserCombo();
+        jLabel6 = new javax.swing.JLabel();
+        cmbEspecie = new javax.swing.JComboBox<>();
+        jLabel7 = new javax.swing.JLabel();
+        cmbHabitat = new javax.swing.JComboBox<>();
+        jPanel10 = new javax.swing.JPanel();
+        jPanel11 = new javax.swing.JPanel();
+        jLabel8 = new javax.swing.JLabel();
+        txtNombreFiltro = new javax.swing.JTextField();
+        cmbSexoFiltro = new javax.swing.JComboBox<>();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        cmbEspecieFiltro = new javax.swing.JComboBox<>();
+        jLabel11 = new javax.swing.JLabel();
+        cmbHabitatFiltro = new javax.swing.JComboBox<>();
+        btnFiltrar = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
         brnGuardar = new javax.swing.JButton();
         btnModificar = new javax.swing.JButton();
         btnLimpiar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
-        dateCFNacimiento = new datechooser.beans.DateChooserCombo();
-        dateCFRegistro = new datechooser.beans.DateChooserCombo();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(0, 0, 0));
+        setMinimumSize(new java.awt.Dimension(960, 720));
+        setUndecorated(true);
+        setPreferredSize(new java.awt.Dimension(960, 720));
+        setResizable(false);
 
-        jLabel1.setFont(new java.awt.Font("Comic Sans MS", 0, 36)); // NOI18N
+        panelShadow1.setShadowSize(15);
+        panelShadow1.setLayout(new java.awt.GridBagLayout());
+
+        jPanel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 44, 107)));
+        jPanel9.setMinimumSize(new java.awt.Dimension(960, 720));
+        jPanel9.setPreferredSize(new java.awt.Dimension(940, 700));
+        jPanel9.setLayout(new java.awt.BorderLayout());
+
+        jPanel1.setBackground(new java.awt.Color(0, 44, 107));
+        jPanel1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jPanel1.setPreferredSize(new java.awt.Dimension(603, 48));
+        jPanel1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                jPanel1MouseDragged(evt);
+            }
+        });
+        jPanel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jPanel1MousePressed(evt);
+            }
+        });
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        jPanel7.setOpaque(false);
+        jPanel7.setLayout(new java.awt.GridBagLayout());
+
+        jLabel1.setFont(new java.awt.Font("Corbel Light", 0, 24)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Tabla Animales BD Zoologico");
-        jLabel1.setIconTextGap(8);
-        jLabel1.setMaximumSize(new java.awt.Dimension(156, 666));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(16, 16, 0, 16);
+        jPanel7.add(jLabel1, gridBagConstraints);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(170, 170, 170)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
-        );
+        jPanel1.add(jPanel7, java.awt.BorderLayout.WEST);
 
-        jLabel2.setFont(new java.awt.Font("Comic Sans MS", 0, 12)); // NOI18N
+        jPanel8.setOpaque(false);
+        jPanel8.setLayout(new java.awt.GridBagLayout());
+
+        jButton1.setBackground(new java.awt.Color(185, 40, 40));
+        jButton1.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("X");
+        jButton1.addActionListener(this::jButton1ActionPerformed);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
+        gridBagConstraints.insets = new java.awt.Insets(16, 16, 16, 16);
+        jPanel8.add(jButton1, gridBagConstraints);
+
+        jPanel1.add(jPanel8, java.awt.BorderLayout.EAST);
+
+        jPanel9.add(jPanel1, java.awt.BorderLayout.NORTH);
+
+        jPanel4.setPreferredSize(new java.awt.Dimension(720, 400));
+        jPanel4.setLayout(new java.awt.BorderLayout());
+
+        jPanel2.setLayout(new java.awt.BorderLayout());
+
+        jPanel5.setMinimumSize(new java.awt.Dimension(300, 230));
+        jPanel5.setPreferredSize(new java.awt.Dimension(300, 230));
+        jPanel5.setLayout(new java.awt.GridBagLayout());
+
         jLabel2.setText("Nombre");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel5.add(jLabel2, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 55;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel5.add(txtNombre, gridBagConstraints);
 
-        jLabel3.setFont(new java.awt.Font("Comic Sans MS", 0, 12)); // NOI18N
         jLabel3.setText("Sexo");
-
-        jLabel4.setFont(new java.awt.Font("Comic Sans MS", 0, 12)); // NOI18N
-        jLabel4.setText("Fecha Nacimiento");
-
-        jLabel5.setFont(new java.awt.Font("Comic Sans MS", 0, 12)); // NOI18N
-        jLabel5.setText("FechaRegistro");
-
-        jLabel6.setFont(new java.awt.Font("Comic Sans MS", 0, 12)); // NOI18N
-        jLabel6.setText("Especie");
-
-        jLabel7.setFont(new java.awt.Font("Comic Sans MS", 0, 12)); // NOI18N
-        jLabel7.setText("Habitat");
-
-        cmbEspecie.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
-
-        cmbHabitat.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel5.add(jLabel3, gridBagConstraints);
 
         cmbSexo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel5.add(cmbSexo, gridBagConstraints);
+
+        jLabel4.setText("Fecha Nacimiento");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel5.add(jLabel4, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel5.add(dateCFNacimiento, gridBagConstraints);
+
+        jLabel5.setText("Fecha Registro");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel5.add(jLabel5, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel5.add(dateCFRegistro, gridBagConstraints);
+
+        jLabel6.setText("Especie");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel5.add(jLabel6, gridBagConstraints);
+
+        cmbEspecie.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel5.add(cmbEspecie, gridBagConstraints);
+
+        jLabel7.setText("Habitat");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel5.add(jLabel7, gridBagConstraints);
+
+        cmbHabitat.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel5.add(cmbHabitat, gridBagConstraints);
+
+        jPanel2.add(jPanel5, java.awt.BorderLayout.PAGE_START);
+
+        jPanel10.setLayout(new java.awt.GridBagLayout());
+
+        jPanel11.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtros"));
+        jPanel11.setLayout(new java.awt.GridBagLayout());
+
+        jLabel8.setText("Nombre");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel11.add(jLabel8, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 55;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel11.add(txtNombreFiltro, gridBagConstraints);
+
+        cmbSexoFiltro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel11.add(cmbSexoFiltro, gridBagConstraints);
+
+        jLabel9.setText("Sexo");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel11.add(jLabel9, gridBagConstraints);
+
+        jLabel10.setText("Especie");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel11.add(jLabel10, gridBagConstraints);
+
+        cmbEspecieFiltro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
+        cmbEspecieFiltro.addActionListener(this::cmbEspecieFiltroActionPerformed);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel11.add(cmbEspecieFiltro, gridBagConstraints);
+
+        jLabel11.setText("Habitat");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel11.add(jLabel11, gridBagConstraints);
+
+        cmbHabitatFiltro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel11.add(cmbHabitatFiltro, gridBagConstraints);
+
+        btnFiltrar.setText("Filtrar");
+        btnFiltrar.addActionListener(this::btnFiltrarActionPerformed);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel11.add(btnFiltrar, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        jPanel10.add(jPanel11, gridBagConstraints);
+
+        jPanel2.add(jPanel10, java.awt.BorderLayout.CENTER);
+
+        jPanel6.setLayout(new java.awt.GridBagLayout());
 
         brnGuardar.setText("Guardar");
         brnGuardar.addActionListener(this::brnGuardarActionPerformed);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel6.add(brnGuardar, gridBagConstraints);
 
         btnModificar.setText("Modificar");
         btnModificar.addActionListener(this::btnModificarActionPerformed);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel6.add(btnModificar, gridBagConstraints);
 
         btnLimpiar.setText("Limpiar");
         btnLimpiar.addActionListener(this::btnLimpiarActionPerformed);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel6.add(btnLimpiar, gridBagConstraints);
 
         btnEliminar.setText("Eliminar");
         btnEliminar.addActionListener(this::btnEliminarActionPerformed);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel6.add(btnEliminar, gridBagConstraints);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addComponent(brnGuardar)
-                            .addComponent(btnEliminar))
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnModificar)
-                                    .addComponent(btnLimpiar))
-                                .addContainerGap(190, Short.MAX_VALUE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(45, 45, 45)
-                                .addComponent(dateCFRegistro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(78, Short.MAX_VALUE))))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(26, 26, 26)
-                                .addComponent(dateCFNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel3))
-                                .addGap(29, 29, 29)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(cmbSexo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel6)
-                                    .addComponent(jLabel7))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(cmbEspecie, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(cmbHabitat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addContainerGap())))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(cmbSexo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addComponent(dateCFNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
-                    .addComponent(dateCFRegistro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(cmbEspecie, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(cmbHabitat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(40, 40, 40)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(brnGuardar)
-                    .addComponent(btnModificar))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnLimpiar)
-                    .addComponent(btnEliminar))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        jPanel2.add(jPanel6, java.awt.BorderLayout.SOUTH);
+
+        jPanel4.add(jPanel2, java.awt.BorderLayout.LINE_START);
+
+        jPanel3.setLayout(new java.awt.BorderLayout());
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -297,48 +495,19 @@ public class FrameAnimales extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jTable1);
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(65, 65, 65)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(96, Short.MAX_VALUE))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(96, Short.MAX_VALUE))
-        );
+        jPanel3.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(17, 17, 17))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
+        jPanel4.add(jPanel3, java.awt.BorderLayout.CENTER);
+
+        jPanel9.add(jPanel4, java.awt.BorderLayout.CENTER);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        panelShadow1.add(jPanel9, gridBagConstraints);
+
+        getContentPane().add(panelShadow1, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -348,7 +517,7 @@ public class FrameAnimales extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void brnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_brnGuardarActionPerformed
-        // 1. Recolección y validación de datos
+        // Recolección y validación de datos
         String nombre = txtNombre.getText();
         String sexo = (String) cmbSexo.getSelectedItem();
         
@@ -379,7 +548,7 @@ public class FrameAnimales extends javax.swing.JFrame {
         // Manejo de la respuesta
         if (exito) {
             JOptionPane.showMessageDialog(this, "Animal guardado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            cargarDatosIniciales(); // Este método recarga la jTable1 y los combos.
+            cargarDatosIniciales();
             limpiarCampos();
         } else {
             JOptionPane.showMessageDialog(this, "Fallo al guardar el animal. Revisa la consola para más detalles.", "Error de Inserción", JOptionPane.ERROR_MESSAGE);
@@ -429,7 +598,7 @@ public class FrameAnimales extends javax.swing.JFrame {
             );
             // Recargar la tabla para reflejar el cambio
             cargarDatosIniciales();
-
+            limpiarCampos();
         } else {
             JOptionPane.showMessageDialog(this, 
                 "Fallo al eliminar el animal. Revisa la consola para más detalles.", 
@@ -440,48 +609,57 @@ public class FrameAnimales extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
-        /*
-        // Verificar si hay un ID seleccionado desde el click de la tabla
-        if (animalIDSeleccionado == -1) {
+        // Verificar si se ha seleccionado alguna fila en la tabla
+        int filaSeleccionada = jTable1.getSelectedRow();
+        
+        if (filaSeleccionada == -1) {
             JOptionPane.showMessageDialog(this, 
                 "Debe seleccionar un animal de la tabla (haciendo clic) para modificar.", 
                 "Selección Requerida", 
-                JOptionPane.WARNING_MESSAGE);
+                JOptionPane.WARNING_MESSAGE
+            );
             return;
         }
-
+        
+        Object idValue = jTable1.getModel().getValueAt(filaSeleccionada, 0);
+        int animalID = (idValue instanceof Integer) ? (int) idValue : Integer.parseInt(idValue.toString());
+                                   
         // Recolección y validación de datos
         String nombre = txtNombre.getText();
         String sexo = (String) cmbSexo.getSelectedItem();
-        String especieNombre = (String) cmbEspecie.getSelectedItem();
-        String habitatNombre = (String) cmbHabitat.getSelectedItem();
-        java.util.Calendar fechaNacimiento = dateCFNacimiento.getCurrent();
+        
+        int especieID = Integer.parseInt(especiesMap.get(cmbEspecie.getSelectedItem().toString()));
+        int habitatID = Integer.parseInt(habitatsMap.get(cmbHabitat.getSelectedItem().toString()));
 
-        // Validación de campos obligatorios
-        if (nombre.isEmpty() || sexo.equals("Selecciona") || especieNombre.equals("Selecciona") || habitatNombre.equals("Selecciona")) {
+        // Obtener la fecha del DateChooser (datechooser.beans.DateChooserCombo)
+        java.sql.Date fechaRegistro = new java.sql.Date(dateCFRegistro.getCurrent().getTime().getTime());
+        java.sql.Date fechaNacimiento = new java.sql.Date(dateCFNacimiento.getCurrent().getTime().getTime());
+
+        // Validación básica
+        if (nombre.isEmpty() || sexo.equals("Selecciona") || cmbEspecie.getSelectedIndex() == -1 || cmbHabitat.getSelectedIndex() == -1) {
             JOptionPane.showMessageDialog(this, "Todos los campos (Nombre, Sexo, Especie, Hábitat) son obligatorios.", "Error de Validación", JOptionPane.WARNING_MESSAGE);
             return;
         }
-
+        
         // Confirmación del Usuario (Opcional, pero buena práctica)
         int confirmacion = JOptionPane.showConfirmDialog(this,
-            "¿Estás seguro de que deseas modificar el animal con ID: " + animalIDSeleccionado + "?",
+            "¿Estás seguro de que deseas modificar el animal con ID: " + animalID + "?",
             "Confirmar Modificación",
             JOptionPane.YES_NO_OPTION);
 
-        if (confirmacion == JOptionPane.NO_OPTION) {
+        if (confirmacion == JOptionPane.NO_OPTION)
             return; // El usuario canceló la operación
-        }
+
+        List<Object> values = new ArrayList<Object>();
+            values.add(especieID);
+            values.add(nombre);
+            values.add(sexo);
+            values.add(fechaRegistro);
+            values.add(fechaNacimiento);
+            values.add(habitatID);
 
         // Llamar al método de modificación del DAO
-        boolean exito = dao.modificarAnimal(
-            animalIDSeleccionado, 
-            nombre, 
-            sexo, 
-            fechaNacimiento, 
-            especieNombre, 
-            habitatNombre
-        );
+        boolean exito = dao.ModifyFromTable("Animales", animalID, values);
 
         // 5. Manejo de la respuesta
         if (exito) {
@@ -491,14 +669,12 @@ public class FrameAnimales extends javax.swing.JFrame {
                 JOptionPane.INFORMATION_MESSAGE);
             cargarDatosIniciales(); // Recargar la tabla
             limpiarCampos();        // Limpiar formulario
-            animalIDSeleccionado = -1; // Resetear ID
         } else {
             JOptionPane.showMessageDialog(this, 
                 "Fallo al modificar el animal. Verifique que los nombres de Especie/Hábitat existan.", 
                 "Error de Modificación", 
                 JOptionPane.ERROR_MESSAGE);
         }
-        */
     }//GEN-LAST:event_btnModificarActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
@@ -526,6 +702,56 @@ public class FrameAnimales extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jTable1MouseClicked
+    
+    final Point clickPoint = new Point();
+
+    private void jPanel1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MousePressed
+
+        clickPoint.x = evt.getX();
+        clickPoint.y = evt.getY();
+    }//GEN-LAST:event_jPanel1MousePressed
+
+    private void jPanel1MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseDragged
+        int x = evt.getXOnScreen() - clickPoint.x - 10;
+        int y = evt.getYOnScreen() - clickPoint.y - 10;
+        setLocation(x, y);
+    }//GEN-LAST:event_jPanel1MouseDragged
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void btnFiltrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiltrarActionPerformed
+        TableModel model = jTable1.getModel();
+        
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>((DefaultTableModel) model);
+        jTable1.setRowSorter(sorter);
+
+        String nombre = txtNombreFiltro.getText();
+        String sexo = cmbSexoFiltro.getSelectedItem().toString();
+        String especie = cmbEspecieFiltro.getSelectedItem().toString();
+        String habitat = cmbHabitatFiltro.getSelectedItem().toString();
+        
+        // Create individual filters
+        RowFilter<DefaultTableModel, Object> speciesFilter = RowFilter.regexFilter(especie, 1);
+        RowFilter<DefaultTableModel, Object> sexFilter     = RowFilter.regexFilter(sexo, 3);
+        RowFilter<DefaultTableModel, Object> habitatFilter = RowFilter.regexFilter(habitat, 6);
+        RowFilter<DefaultTableModel, Object> nameFilter    = RowFilter.regexFilter(nombre, 2);
+
+        // Combine them with AND logic
+        List<RowFilter<DefaultTableModel, Object>> filters = new ArrayList<>();
+        if (cmbEspecieFiltro.getSelectedIndex() != 0) filters.add(speciesFilter);
+        if (cmbSexoFiltro.getSelectedIndex() != 0) filters.add(sexFilter);
+        if (cmbHabitatFiltro.getSelectedIndex() != 0) filters.add(habitatFilter);
+        if (!nombre.isBlank()) filters.add(nameFilter);
+        
+        RowFilter<DefaultTableModel, Object> combinedFilter = RowFilter.andFilter(filters);
+        sorter.setRowFilter(combinedFilter);
+    }//GEN-LAST:event_btnFiltrarActionPerformed
+
+    private void cmbEspecieFiltroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbEspecieFiltroActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbEspecieFiltroActionPerformed
 
     /**
      * @param args the command line arguments
@@ -555,25 +781,44 @@ public class FrameAnimales extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton brnGuardar;
     private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnFiltrar;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnModificar;
     private javax.swing.JComboBox<String> cmbEspecie;
+    private javax.swing.JComboBox<String> cmbEspecieFiltro;
     private javax.swing.JComboBox<String> cmbHabitat;
+    private javax.swing.JComboBox<String> cmbHabitatFiltro;
     private javax.swing.JComboBox<String> cmbSexo;
+    private javax.swing.JComboBox<String> cmbSexoFiltro;
     private datechooser.beans.DateChooserCombo dateCFNacimiento;
     private datechooser.beans.DateChooserCombo dateCFRegistro;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private ZoologicoAppU6.PanelShadow panelShadow1;
     private javax.swing.JTextField txtNombre;
+    private javax.swing.JTextField txtNombreFiltro;
     // End of variables declaration//GEN-END:variables
 }

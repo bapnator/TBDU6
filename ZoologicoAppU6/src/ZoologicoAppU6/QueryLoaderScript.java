@@ -132,7 +132,12 @@ public class QueryLoaderScript {
         SQLQuery SQL_CONSULTA = new SQLQuery(tableName);
         if (SQL_CONSULTA.isNull()) return null;
         
-        DefaultTableModel model = new DefaultTableModel(SQL_CONSULTA.GetDisplayNames(), 0);
+        DefaultTableModel model = new DefaultTableModel(SQL_CONSULTA.GetDisplayNames(), 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // all cells non-editable
+            }
+        };
 
         try (Connection con = Conexion.getConexion(); Statement stmt = con.createStatement(); ResultSet rs = stmt.executeQuery(SQL_CONSULTA.GetQueryText())) {
             while (rs.next()) {
